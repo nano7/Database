@@ -1,0 +1,39 @@
+{
+    "name"       : "nano7/database",
+    "description": "The Nano7 Database package.",
+    "license"    : "GPL-3.0-only",
+
+    "authors"    : [
+        {
+            "name" : "Bruno Goncalves",
+            "email": "bugotech@gmail.com"
+        }
+    ],
+
+    "require": {
+        "php"                   : ">=5.5.0",
+        "nano7/foundation"      : "dev-master",
+        "mongodb/mongodb"       : "^1.0.0"
+    },
+
+    "autoload": {
+        "files": [
+            "helpers.php"
+        ],
+
+        "psr-4": {
+            "Nano7\\Database\\": ""
+        }
+    },
+
+    "extra": {
+        "nano7": {
+            "providers": [
+                "Nano7\\Database\\DatabaseServiceProviders"
+            ]
+        }
+    },
+
+    "minimum-stability": "dev",
+    "prefer-stable"    : true
+}
