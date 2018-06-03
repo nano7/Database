@@ -32,11 +32,11 @@ interface ConnectionInterface
      * Create new index.
      *
      * @param $collection
-     * @param $key
+     * @param $columns
      * @param array $options
      * @return string
      */
-    public function createIndex($collection, $key, array $options = []);
+    public function createIndex($collection, $columns, array $options = []);
 
     /**
      * Drop a index.
