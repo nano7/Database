@@ -133,7 +133,7 @@ class Deployer
     public function getDeployFiles($paths)
     {
         return Collection::make($paths)->flatMap(function ($path) {
-            return $this->files->glob($path.'/*_*.php');
+            return $this->files->glob($path.'/*.php');
         })->filter()->sortBy(function ($file) {
                 return $this->getDeployName($file);
             })->values()->keyBy(function ($file) {
