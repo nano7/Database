@@ -56,13 +56,7 @@ class Connection implements ConnectionInterface
      */
     public function hasCollection($name)
     {
-        foreach ($this->getCollections() as $collection) {
-            if ($collection == $name) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($name, $this->getCollections());
     }
 
     /**
@@ -73,7 +67,12 @@ class Connection implements ConnectionInterface
      */
     public function getCollections($options = [])
     {
-        return $this->db->listCollections($options);
+        $list = [];
+        foreach ($this->db->listCollections($options) as $coll) {
+            $list[] = $coll->getName();
+        }
+
+        return $list;
     }
 
     /**
@@ -120,13 +119,7 @@ class Connection implements ConnectionInterface
      */
     public function hasIndex($collection, $name)
     {
-        foreach ($this->getIndexs($collection) as $index) {
-            if ($index == $name) {
-                return true;
-            }
-        }
-
-        return false;
+        return in_array($name, $this->getIndexs($collection));
     }
 
     /**
@@ -142,7 +135,12 @@ class Connection implements ConnectionInterface
             return [];
         }
 
-        return $this->db->selectCollection($collection)->listIndexes($options);
+        $list = [];
+        foreach ($this->db->selectCollection($collection)->listIndexes($options) as $index) {
+            $list[] = $index->getName();
+        }
+
+        return $list;
     }
 
     /**
