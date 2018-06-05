@@ -1,6 +1,7 @@
 <?php namespace Nano7\Database;
 
 use Nano7\Database\Connection;
+use Nano7\Database\Deploys\Deployer;
 use Nano7\Database\Migrations\Migrator;
 use Nano7\Foundation\Support\ServiceProvider;
 
@@ -13,7 +14,9 @@ class DatabaseServiceProviders extends ServiceProvider
     {
         $this->registerManager();
 
-        $this->registerMigrator();
+        //$this->registerMigrator();
+
+        $this->registerDeployer();
     }
 
     /**
@@ -44,7 +47,7 @@ class DatabaseServiceProviders extends ServiceProvider
     }
 
     /**
-     * Register migrator
+     * Register migrator.
      */
     protected function registerMigrator()
     {
@@ -54,5 +57,18 @@ class DatabaseServiceProviders extends ServiceProvider
 
         // Comandos da migração base
         $this->command('\Nano7\Database\Console\MigrateCommand');
+    }
+
+    /**
+     * Register deployer.
+     */
+    protected function registerDeployer()
+    {
+        $this->app->singleton('deployer', function () {
+            return new Deployer($this->app['files']);
+        });
+
+        // Comandos da migração base
+        $this->command('\Nano7\Database\Console\DeployCommand');
     }
 }

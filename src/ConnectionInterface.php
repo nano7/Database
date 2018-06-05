@@ -5,6 +5,22 @@ use Nano7\Database\Query\Builder;
 interface ConnectionInterface
 {
     /**
+     * Check if collection exist.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasCollection($name);
+
+    /**
+     * Get collections list.
+     *
+     * @param array $options
+     * @return array
+     */
+    public function getCollections($options = []);
+
+    /**
      * Get collection by name.
      *
      * @param $name
@@ -13,7 +29,7 @@ interface ConnectionInterface
     public function collection($name);
 
     /**
-     * Create newq collection.
+     * Create new collection.
      *
      * @param $name
      * @param array $options
@@ -27,6 +43,24 @@ interface ConnectionInterface
      * @param array $options
      */
     public function dropCollection($name, $options = []);
+
+    /**
+     * Check if index exist in collection.
+     *
+     * @param string $collection
+     * @param string $name
+     * @return bool
+     */
+    public function hasIndex($collection, $name);
+
+    /**
+     * Get index list in collection.
+     *
+     * @param string $collection
+     * @param array $options
+     * @return array
+     */
+    public function getIndexs($collection, $options = []);
 
     /**
      * Create new index.

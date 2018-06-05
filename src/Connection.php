@@ -49,6 +49,34 @@ class Connection implements ConnectionInterface
     }
 
     /**
+     * Check if collection exist.
+     *
+     * @param string $name
+     * @return bool
+     */
+    public function hasCollection($name)
+    {
+        foreach ($this->getCollections() as $collection) {
+            if ($collection == $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get collections list.
+     *
+     * @param array $options
+     * @return array
+     */
+    public function getCollections($options = [])
+    {
+        return $this->db->listCollections($options);
+    }
+
+    /**
      * Get collection by name.
      *
      * @param $name
@@ -81,6 +109,40 @@ class Connection implements ConnectionInterface
     public function dropCollection($name, $options = [])
     {
         $this->db->dropCollection($name, $options);
+    }
+
+    /**
+     * Check if index exist in collection.
+     *
+     * @param string $collection
+     * @param string $name
+     * @return bool
+     */
+    public function hasIndex($collection, $name)
+    {
+        foreach ($this->getIndexs($collection) as $index) {
+            if ($index == $name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get index list in collection.
+     *
+     * @param string $collection
+     * @param array $options
+     * @return array
+     */
+    public function getIndexs($collection, $options = [])
+    {
+        if (! $this->hasCollection($collection)) {
+            return [];
+        }
+
+        return $this->db->selectCollection($collection)->listIndexes($options);
     }
 
     /**
