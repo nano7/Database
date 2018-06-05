@@ -1,4 +1,4 @@
-<?php namespace Nano7\Database\Migrations;
+<?php namespace Nano7\Database\Deploys;
 
 use Nano7\Database\Deploys\Deployer;
 
