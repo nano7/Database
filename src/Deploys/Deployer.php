@@ -138,7 +138,7 @@ class Deployer
 
             // Carregar lista de colecoes que sobraram no banco
             $diff = Arr::where($indexs, function($item) use ($activated) {
-                return ((! in_array($item, $activated)) || ($item != '_id_'));
+                return ((! in_array($item, $activated)) && ($item != '_id_'));
             });
 
             // Excluir indices que sobraram
