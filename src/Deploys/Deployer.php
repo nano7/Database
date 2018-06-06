@@ -105,7 +105,7 @@ class Deployer
     }
 
     /**
-     * Run clear database.
+     * Run clear database collections.
      */
     protected function runClearDatabaseCollections()
     {
@@ -129,7 +129,7 @@ class Deployer
     }
 
     /**
-     * Run clear database.
+     * Run clear database indexs.
      */
     protected function runClearDatabaseIndexs()
     {
@@ -138,7 +138,7 @@ class Deployer
 
             // Carregar lista de colecoes que sobraram no banco
             $diff = Arr::where($indexs, function($item) use ($activated) {
-                return ! in_array($item, $activated);
+                return ((! in_array($item, $activated)) || ($item != '_id_'));
             });
 
             // Excluir indices que sobraram
