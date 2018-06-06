@@ -1,6 +1,7 @@
 <?php namespace Nano7\Database\Deploys;
 
-use Illuminate\Support\Str;
+use Nano7\Foundation\Support\Arr;
+use Nano7\Foundation\Support\Str;
 use Illuminate\Support\Collection;
 use Nano7\Foundation\Support\Filesystem;
 
@@ -60,7 +61,7 @@ class Deployer
 
         $this->runDeployies($files, $options);
 
-        $this->runClearDatabase();
+        $this->runClearDatabaseCollections();
 
         return $files;
     }
@@ -106,9 +107,47 @@ class Deployer
     /**
      * Run clear database.
      */
-    protected function runClearDatabase()
+    protected function runClearDatabaseCollections()
     {
         $collections = db()->getCollections();
+        $activated = array_keys($this->collections);
+
+        // Carregar lista de colecoes que sobraram no banco
+        $diff = Arr::where($collections, function($item) use ($activated) {
+            return ! in_array($item, $activated);
+        });
+
+        // Excluir colecoes que sobraram
+        foreach ($diff as $diffColl) {
+            $this->note("<comment>Collection droping:</comment> {$diffColl}");
+            db()->dropCollection($diffColl);
+            $this->note("<comment>Collection droped:</comment> {$diffColl}");
+        }
+
+        // Carregar lista de indices
+        $this->runClearDatabaseIndexs();
+    }
+
+    /**
+     * Run clear database.
+     */
+    protected function runClearDatabaseIndexs()
+    {
+        foreach ($this->collections as $coll => $activated) {
+            $indexs = db()->getIndexs($coll);
+
+            // Carregar lista de colecoes que sobraram no banco
+            $diff = Arr::where($indexs, function($item) use ($activated) {
+                return ! in_array($item, $activated);
+            });
+
+            // Excluir indices que sobraram
+            foreach ($diff as $diffIndex) {
+                $this->note("<comment>Index droping:</comment> {$coll}.{$diffIndex}");
+                db()->dropIndex($coll, $diffIndex);
+                $this->note("<comment>Index droped:</comment> {$coll}.{$diffIndex}");
+            }
+        }
     }
 
     /**
