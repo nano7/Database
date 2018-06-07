@@ -287,7 +287,7 @@ class Deployer
     public function index($collection, $columns, $unique)
     {
         // Montar nome do index
-        $name = strtolower(sprintf('ax_%s', implode('_', array_keys($columns))));
+        $name = strtolower(sprintf('ax_%s_%s', implode('_', array_keys($columns)), $unique ? 'unique' : "normal"));
 
         // Verificar se deve adicionar a colecao na lista
         if (! array_key_exists($collection, $this->collections)) {
