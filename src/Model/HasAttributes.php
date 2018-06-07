@@ -106,6 +106,8 @@ trait HasAttributes
         // which simply lets the developers tweak the attribute as it is set on
         // the model, such as "json_encoding" an listing of data for storage.
         if ($this->hasSetMutator($key)) {
+            $this->changed[$key] = true;
+
             return $this->setMutateAttribute($key, $value);
         }
 
