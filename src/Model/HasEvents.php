@@ -3,6 +3,16 @@
 trait HasEvents
 {
     /**
+     * User exposed observable events.
+     *
+     * These are extra user-defined events observers may subscribe to.
+     *
+     * @var array
+     */
+    protected $observables = [];
+
+
+    /**
      * Make event name.
      *
      * @param $event
@@ -157,5 +167,55 @@ trait HasEvents
     public static function deleted($callback)
     {
         static::registerModelEvent('deleted', $callback);
+    }
+
+    /**
+     * Register observers with the model.
+     *
+     * @param  object|array|string  $classes
+     * @return void
+     */
+    public static function observe($classes)
+    {
+        $instance = new static;
+
+        foreach ((array) $classes as $class) {
+            $instance->registerObserver($class);
+        }
+    }
+
+    /**
+     * Register a single observer with the model.
+     *
+     * @param  object|string $class
+     * @return void
+     */
+    protected function registerObserver($class)
+    {
+        $className = is_string($class) ? $class : get_class($class);
+
+        foreach ($this->getObservableEvents() as $event) {
+            if (method_exists($class, $event)) {
+                static::registerModelEvent($event, $className . '@' . $event);
+            }
+        }
+    }
+
+    /**
+     * Get the observable event names.
+     *
+     * @return array
+     */
+    public function getObservableEvents()
+    {
+        return array_merge(
+            [
+                'creating', 'created',
+                'updating', 'updated',
+                'saving',   'saved',
+                'deleting', 'deleted',
+            ],
+            $this->observables
+        );
     }
 }
