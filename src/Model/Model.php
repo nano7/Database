@@ -34,6 +34,11 @@ class Model
     public $exists = false;
 
     /**
+     * @var array
+     */
+    protected static $scopes = [];
+
+    /**
      * The array of booted models.
      *
      * @var array

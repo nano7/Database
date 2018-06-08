@@ -5,11 +5,6 @@ use Nano7\Database\Query\Builder as QueryBuilder;
 trait HasScopes
 {
     /**
-     * @var array
-     */
-    protected $scopes = [];
-
-    /**
      * Register a new global scope on the model.
      *
      * @param  Scope $scope
@@ -17,10 +12,10 @@ trait HasScopes
      *
      * @throws \InvalidArgumentException
      */
-    public function registerScope($scope)
+    public static function registerScope($scope)
     {
         if ($scope instanceof Scope) {
-            $this->scopes[$scope->getName()] = $scope;
+            static::$scopes[$scope->getName()] = $scope;
 
             return true;
         }
@@ -34,16 +29,14 @@ trait HasScopes
      * @param QueryBuilder $query
      * @param Model $model
      * @param array $ignoreScopes
-     * @return $this
+     * @return void
      */
     protected function applyScopes(QueryBuilder $query, Model $model, $ignoreScopes = [])
     {
-        foreach ($this->scopes as $sid => $scope) {
+        foreach (static::$scopes as $sid => $scope) {
             if (! in_array($sid, $ignoreScopes)) {
                 $scope->apply($query, $model);
             }
         }
-
-        return $this;
     }
 }
