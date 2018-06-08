@@ -12,15 +12,16 @@ trait HasScopes
     /**
      * Register a new global scope on the model.
      *
+     * @param  string $scopeId
      * @param  Scope $scope
      * @return bool
      *
      * @throws \InvalidArgumentException
      */
-    public function registerScope($scope)
+    public function registerScope($scopeId, $scope)
     {
         if ($scope instanceof Scope) {
-            $this->scopes[get_class($scope)] = $scope;
+            $this->scopes[$scopeId] = $scope;
 
             return true;
         }
@@ -33,12 +34,15 @@ trait HasScopes
      *
      * @param QueryBuilder $query
      * @param Model $model
+     * @param array $ignoreScopes
      * @return $this
      */
-    protected function applyScopes(QueryBuilder $query, Model $model)
+    protected function applyScopes(QueryBuilder $query, Model $model, $ignoreScopes = [])
     {
-        foreach ($this->scopes as $scope) {
-            $scope->apply($query, $model);
+        foreach ($this->scopes as $sid => $scope) {
+            if (! in_array($sid, $ignoreScopes)) {
+                $scope->apply($query, $model);
+            }
         }
 
         return $this;

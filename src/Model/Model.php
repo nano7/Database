@@ -192,37 +192,44 @@ class Model
 
     /**
      * Get new Query.
+     *
+     * @param array $ignoreScopes
      * @return Builder
      */
-    protected function newQuery()
+    protected function newQuery($ignoreScopes = [])
     {
         $query = new Builder();
         $query->setModel($this);
-        $query->setQuery($this->newQueryNotModel());
+        $query->setQuery($this->newQueryNotModel($ignoreScopes));
 
         return $query;
     }
 
     /**
      * Get new Query.
+     *
+     * @param array $ignoreScopes
      * @return QueryBuilder
      */
-    protected function newQueryNotModel()
+    protected function newQueryNotModel($ignoreScopes = [])
     {
         $query = $this->connection()->collection($this->getCollection());
 
         // Adicionar escopos globais
-        $this->applyScopes($query, $this);
+        $this->applyScopes($query, $this, $ignoreScopes);
 
         return $query;
     }
 
     /**
+     * Get new query of model.
+     *
+     * @param array $ignoreScopes
      * @return Builder
      */
-    public static function query()
+    public static function query($ignoreScopes = [])
     {
-        return (new static)->newQuery();
+        return (new static)->newQuery($ignoreScopes);
     }
 
     /**
