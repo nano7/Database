@@ -33,13 +33,64 @@ class Model
     public $exists = false;
 
     /**
+     * The array of booted models.
+     *
+     * @var array
+     */
+    protected static $booted = [];
+
+    /**
      * Create a new Model model instance.
      *
      * @return void
      */
     public function __construct()
     {
-        //$this->bootIfNotBooted();
+        $this->bootIfNotBooted();
+    }
+
+    /**
+     * Check if the model needs to be booted and if so, do it.
+     *
+     * @return void
+     */
+    protected function bootIfNotBooted()
+    {
+        if (! isset(static::$booted[static::class])) {
+            static::$booted[static::class] = true;
+
+            $this->fireModelEvent('booting', false);
+
+            static::boot();
+
+            $this->fireModelEvent('booted', false);
+        }
+    }
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        static::bootTraits();
+    }
+
+    /**
+     * Boot all of the bootable traits on the model.
+     *
+     * @return void
+     */
+    protected static function bootTraits()
+    {
+        $class = static::class;
+
+        foreach (class_uses_recursive($class) as $trait) {
+            if (method_exists($class, $method = 'boot' . class_basename($trait))) {
+                forward_static_call([$class, $method]);
+            }
+        }
     }
 
     /**

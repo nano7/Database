@@ -50,6 +50,28 @@ trait HasEvents
     }
 
     /**
+     * Register a booting model event with the dispatcher.
+     *
+     * @param  \Closure|string  $callback
+     * @return void
+     */
+    public static function booting($callback)
+    {
+        static::registerModelEvent('booting', $callback);
+    }
+
+    /**
+     * Register a booted model event with the dispatcher.
+     *
+     * @param  \Closure|string  $callback
+     * @return void
+     */
+    public static function booted($callback)
+    {
+        static::registerModelEvent('booted', $callback);
+    }
+
+    /**
      * Register a saving model event with the dispatcher.
      *
      * @param  \Closure|string  $callback
