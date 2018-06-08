@@ -37,6 +37,17 @@ trait HasAttributes
     protected $changed = [];
 
     /**
+     * Check if attribute exist.
+     *
+     * @param $attribute
+     * @return bool
+     */
+    public function hasAttribute($attribute)
+    {
+        return array_key_exists($attribute, $this->getAttributes());
+    }
+
+    /**
      * Get an attribute from the model.
      *
      * @param  string  $key
