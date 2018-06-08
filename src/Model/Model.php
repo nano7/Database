@@ -7,6 +7,7 @@ class Model
 {
     use HasCasts;
     use HasEvents;
+    use HasScopes;
     use HasMutator;
     use HasAttributes;
     use HasRelation;
@@ -197,10 +198,7 @@ class Model
     {
         $query = new Builder();
         $query->setModel($this);
-        $query->setQuery($this->connection()->collection($this->getCollection()));
-
-        // Adicionar escopos globais
-        //...
+        $query->setQuery($this->newQueryNotModel());
 
         return $query;
     }
@@ -214,7 +212,7 @@ class Model
         $query = $this->connection()->collection($this->getCollection());
 
         // Adicionar escopos globais
-        //...
+        $this->applyScopes($query, $this);
 
         return $query;
     }
