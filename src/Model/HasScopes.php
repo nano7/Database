@@ -12,16 +12,15 @@ trait HasScopes
     /**
      * Register a new global scope on the model.
      *
-     * @param  string $scopeId
      * @param  Scope $scope
      * @return bool
      *
      * @throws \InvalidArgumentException
      */
-    public function registerScope($scopeId, $scope)
+    public function registerScope($scope)
     {
         if ($scope instanceof Scope) {
-            $this->scopes[$scopeId] = $scope;
+            $this->scopes[$scope->getName()] = $scope;
 
             return true;
         }
