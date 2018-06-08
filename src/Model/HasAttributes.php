@@ -44,6 +44,9 @@ trait HasAttributes
      */
     public function getAttribute($key)
     {
+        // Verificar alias para _id
+        $key = ($key == 'id') ? '_id' : $key;
+
         // Verificar se foi implemetado um relacionamento
         $value = $this->getRelationValue($key);
         if (! is_null($value)) {
@@ -102,6 +105,9 @@ trait HasAttributes
      */
     public function setAttribute($key, $value)
     {
+        // Verificar alias para _id
+        $key = ($key == 'id') ? '_id' : $key;
+
         // First we will check for the presence of a mutator for the set operation
         // which simply lets the developers tweak the attribute as it is set on
         // the model, such as "json_encoding" an listing of data for storage.
