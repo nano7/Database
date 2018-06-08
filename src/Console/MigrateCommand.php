@@ -10,7 +10,7 @@ class MigrateCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'migrate';
+    protected $signature = 'builder:migrate';
 
     /**
      * The console command description.

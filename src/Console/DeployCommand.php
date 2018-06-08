@@ -10,7 +10,7 @@ class DeployCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'db:deploy';
+    protected $signature = 'builder:deploy';
 
     /**
      * The console command description.
