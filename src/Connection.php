@@ -277,4 +277,51 @@ class Connection implements ConnectionInterface
 
         return 'mongodb://' . implode(',', $hosts) . ($auth_database ? '/' . $auth_database : '');
     }
+
+    /**
+     * Start transaction. >= mongodb 4.0
+     * @return bool
+     */
+    public function beginTransaction()
+    {
+        return true; // Only mongodb >= 4.0
+    }
+
+    /**
+     * Commit. >= mongodb 4.0
+     * @return bool
+     */
+    public function commit()
+    {
+        return true; // Only mongodb >= 4.0
+    }
+
+    /**
+     * Abor (abort). >= mongodb 4.0
+     * @return bool
+     */
+    public function abort()
+    {
+        return true; // Only mongodb >= 4.0
+    }
+
+    /**
+     * Abor (abort). >= mongodb 4.0
+     * @return mixed
+     */
+    public function transaction(\Closure $callback)
+    {
+        $this->beginTransaction();
+        try {
+            $return = $callback();
+
+            $this->commit();
+
+            return $return;
+        } catch (\Exception $e) {
+            $this->abort();
+
+            throw $e;
+        }
+    }
 }

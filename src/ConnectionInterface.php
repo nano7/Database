@@ -90,4 +90,28 @@ interface ConnectionInterface
      * @return bool
      */
     public function insert($collection, $bindings = []);
+
+    /**
+     * Start transaction. >= mongodb 4.0
+     * @return bool
+     */
+    public function beginTransaction();
+
+    /**
+     * Commit. >= mongodb 4.0
+     * @return bool
+     */
+    public function commit();
+
+    /**
+     * Abor (abort). >= mongodb 4.0
+     * @return bool
+     */
+    public function abort();
+
+    /**
+     * Abor (abort). >= mongodb 4.0
+     * @return mixed
+     */
+    public function transaction(\Closure $callback);
 }
