@@ -13,6 +13,7 @@
     "require": {
         "php"                   : ">=5.5.0",
         "nano7/foundation"      : "dev-master",
+        "nano7/validation"      : "dev-master",
         "mongodb/mongodb"       : "^1.0.0"
     },
 

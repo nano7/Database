@@ -1,6 +1,8 @@
 <?php namespace Nano7\Database\Model;
 
 use Nano7\Foundation\Support\Str;
+use Nano7\Validation\Json\ValidatorJson;
+use Nano7\Validation\ValidationException;
 use Nano7\Database\Query\Builder as QueryBuilder;
 
 class Model
@@ -350,6 +352,11 @@ class Model
     {
         $query = $this->newQueryNotModel();
 
+        // Validar attributes
+        if ($this->validate() != true) {
+            return false;
+        }
+
         // Disparar evento que o documento esta sendo salvo
         if ($this->fireModelEvent('saving') === false) {
             return false;
@@ -408,6 +415,31 @@ class Model
         }
 
         return $count;
+    }
+
+    /**
+     * Validate attributes.
+     *
+     * @return bool
+     */
+    public function validate()
+    {
+        // Disparar evento que o documento esta sendo validado
+        if ($this->fireModelEvent('validating') === false) {
+            return false;
+        }
+
+        // Varificar se tem o arquivo schema
+        $validator = new ValidatorJson(app_path('Models/Schemas'));
+        $schema = get_called_class() . 'Schema';
+
+        if (! $validator->validate($this->attributes, $schema, strtolower(get_called_class()))) {
+            throw new ValidationException("Erro on validate model", null, null, $validator->getErros());
+        }
+
+        $this->fireModelEvent('validated', false);
+
+        return true;
     }
 
     /**

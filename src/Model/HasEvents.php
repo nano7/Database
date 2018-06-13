@@ -82,6 +82,28 @@ trait HasEvents
     }
 
     /**
+     * Register a validating model event with the dispatcher.
+     *
+     * @param  \Closure|string  $callback
+     * @return void
+     */
+    public static function validating($callback)
+    {
+        static::registerModelEvent('validating', $callback);
+    }
+
+    /**
+     * Register a validated model event with the dispatcher.
+     *
+     * @param  \Closure|string  $callback
+     * @return void
+     */
+    public static function validated($callback)
+    {
+        static::registerModelEvent('validated', $callback);
+    }
+
+    /**
      * Register a saving model event with the dispatcher.
      *
      * @param  \Closure|string  $callback
@@ -210,10 +232,11 @@ trait HasEvents
     {
         return array_merge(
             [
-                'creating', 'created',
-                'updating', 'updated',
-                'saving',   'saved',
-                'deleting', 'deleted',
+                'validating', 'validated',
+                'creating',   'created',
+                'updating',   'updated',
+                'saving',     'saved',
+                'deleting',   'deleted',
             ],
             $this->observables
         );
