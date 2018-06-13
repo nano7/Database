@@ -173,6 +173,24 @@ trait HasAttributes
     }
 
     /**
+     * Set the array of model attributes. No checking is done.
+     *
+     * @param  array  $attributes
+     * @param  bool  $sync
+     * @return $this
+     */
+    public function mergeRawAttributes(array $attributes, $sync = false)
+    {
+        $this->attributes = array_merge([], $this->attributes, $attributes);
+
+        if ($sync) {
+            $this->syncOriginal();
+        }
+
+        return $this;
+    }
+
+    /**
      * Remove a attribute.
      *
      * @param $key
