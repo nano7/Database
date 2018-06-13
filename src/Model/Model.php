@@ -433,6 +433,12 @@ class Model
         $validator = new ValidatorJson(app_path('Models/Schemas'));
         $schema = get_called_class() . 'Schema';
 
+        // Verificar se schema foi implementado
+        if (! $validator->existsSchema($schema)) {
+            return true;
+        }
+
+        // Validar schema
         if (! $validator->validate($this->attributes, $schema, strtolower(get_called_class()))) {
             throw new ValidationException("Erro on validate model", null, null, $validator->getErros());
         }
