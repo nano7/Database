@@ -60,6 +60,17 @@ trait HasEvents
     }
 
     /**
+     * Register a initializing model event with the dispatcher.
+     *
+     * @param  \Closure|string  $callback
+     * @return void
+     */
+    public static function initializing($callback)
+    {
+        static::registerModelEvent('initializing', $callback);
+    }
+
+    /**
      * Register a booting model event with the dispatcher.
      *
      * @param  \Closure|string  $callback
@@ -232,11 +243,12 @@ trait HasEvents
     {
         return array_merge(
             [
-                'validating', 'validated',
-                'creating',   'created',
-                'updating',   'updated',
-                'saving',     'saved',
-                'deleting',   'deleted',
+                'initializing',
+                'validating',   'validated',
+                'creating',     'created',
+                'updating',     'updated',
+                'saving',       'saved',
+                'deleting',     'deleted',
             ],
             $this->observables
         );

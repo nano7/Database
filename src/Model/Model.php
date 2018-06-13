@@ -55,6 +55,8 @@ class Model
      */
     public function __construct()
     {
+        $this->fireModelEvent('initializing', false);
+
         $this->bootIfNotBooted();
     }
 
