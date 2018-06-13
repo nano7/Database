@@ -1,5 +1,6 @@
 <?php namespace Nano7\Database\Model;
 
+use Nano7\Foundation\Support\Arr;
 use Nano7\Foundation\Support\Str;
 use Nano7\Validation\Json\ValidatorJson;
 use Nano7\Validation\ValidationException;
@@ -431,7 +432,7 @@ class Model
 
         // Varificar se tem o arquivo schema
         $validator = new ValidatorJson(app_path('Models/Schemas'), ['array_equal_object' => true]);
-        $class = array_pop(explode('\\', get_called_class()));
+        $class = Arr::last(explode('\\', get_called_class()));
         $schema = $class . 'Schema';
 
         // Verificar se schema foi implementado
