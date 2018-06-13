@@ -431,7 +431,8 @@ class Model
 
         // Varificar se tem o arquivo schema
         $validator = new ValidatorJson(app_path('Models/Schemas'));
-        $schema = get_called_class() . 'Schema';
+        $class = array_pop(explode('\\', get_called_class()));
+        $schema = $class . 'Schema';
 
         // Verificar se schema foi implementado
         if (! $validator->existsSchema($schema)) {
@@ -439,7 +440,7 @@ class Model
         }
 
         // Validar schema
-        if (! $validator->validate($this->attributes, $schema, strtolower(get_called_class()))) {
+        if (! $validator->validate($this->attributes, $schema, strtolower($class))) {
             throw new ValidationException("Erro on validate model", null, null, $validator->getErros());
         }
 
