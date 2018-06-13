@@ -430,7 +430,7 @@ class Model
         }
 
         // Varificar se tem o arquivo schema
-        $validator = new ValidatorJson(app_path('Models/Schemas'));
+        $validator = new ValidatorJson(app_path('Models/Schemas'), ['array_equal_object' => true]);
         $class = array_pop(explode('\\', get_called_class()));
         $schema = $class . 'Schema';
 
