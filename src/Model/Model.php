@@ -49,6 +49,11 @@ class Model
     protected static $booted = [];
 
     /**
+     * @var bool
+     */
+    protected $fillExists = false;
+
+    /**
      * Create a new Model model instance.
      *
      * @return void
@@ -125,13 +130,18 @@ class Model
      * Fill the model with an array of attributes.
      *
      * @param  array  $attributes
+     * @param  bool $exists
      * @return $this
      */
-    public function fill(array $attributes)
+    public function fill(array $attributes, $exists = false)
     {
+        $this->fillExists = $exists;
+
         foreach ($attributes as $key => $value) {
             $this->setAttribute($key, $value);
         }
+
+        $this->fillExists = false;
 
         return $this;
     }
@@ -252,7 +262,7 @@ class Model
     public function newInstance($attributes = [], $exists = false)
     {
         $model = new static();
-        $model->fill((array) $attributes);
+        $model->fill((array) $attributes, $exists);
         $model->syncOriginal();
 
         $model->exists = $exists;
