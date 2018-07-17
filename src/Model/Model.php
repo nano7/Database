@@ -4,9 +4,10 @@ use Nano7\Foundation\Support\Arr;
 use Nano7\Foundation\Support\Str;
 use Nano7\Validation\Json\ValidatorJson;
 use Nano7\Validation\ValidationException;
+use Illuminate\Contracts\Support\Arrayable;
 use Nano7\Database\Query\Builder as QueryBuilder;
 
-class Model
+class Model implements Arrayable
 {
     use HasCasts;
     use HasEvents;
@@ -460,6 +461,21 @@ class Model
         $this->fireModelEvent('validated', false);
 
         return true;
+    }
+
+    /**
+     * Get the instance as an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        $array = [];
+        foreach (array_keys($this->attributes) as $key) {
+            $array[$key] = $this->getAttribute($key);
+        }
+
+        return $array;
     }
 
     /**
