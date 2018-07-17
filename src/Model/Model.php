@@ -472,6 +472,8 @@ class Model implements Arrayable
     {
         $array = [];
         foreach (array_keys($this->attributes) as $key) {
+            $key = ($key == '_id') ? 'id' : $key;
+
             $array[$key] = $this->getAttribute($key);
         }
 
