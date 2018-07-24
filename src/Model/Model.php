@@ -148,6 +148,21 @@ class Model implements Arrayable
     }
 
     /**
+     * Create clone this model.
+     *
+     * @return Model
+     */
+    public function toClone()
+    {
+        $attributes = $this->toArray();
+
+        unset($attributes['id']);
+        unset($attributes['_id']);
+
+        return $this->create($attributes, false);
+    }
+
+    /**
      * Get the collection associated with the model.
      *
      * @return string
