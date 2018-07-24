@@ -364,7 +364,7 @@ trait Runner
         //    $options['maxTimeMS'] = $this->timeout;
         //}
         if ($this->orders) {
-            $options['sort'] = $this->orders;
+            $options['sort'] = $this->compileOrders($this->orders);
         }
         if ($this->offset) {
             $options['skip'] = $this->offset;
@@ -554,6 +554,22 @@ trait Runner
         $where['value'] = null;
 
         return $this->compileWhereBasic($where);
+    }
+
+    /**
+     * @param array $orders
+     * @return array
+     */
+    protected function compileOrders(array $orders)
+    {
+        $sorts = [];
+
+        foreach ($orders as $ord) {
+            list($oField, $oDirection) = $ord;
+            $sorts[$oField] = ($oDirection == 'desc') ? -1 : 1;
+        }
+
+        return $sorts;
     }
 
     /**
