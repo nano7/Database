@@ -565,7 +565,7 @@ trait Runner
         $sorts = [];
 
         foreach ($orders as $ord) {
-            list($oField, $oDirection) = $ord;
+            list($oField, $oDirection) = array_values($ord);
             $sorts[$oField] = ($oDirection == 'desc') ? -1 : 1;
         }
 
