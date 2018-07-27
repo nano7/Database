@@ -21,6 +21,9 @@ trait Wheres
      */
     public function where($column, $operator = null, $value = null, $boolean = 'and')
     {
+        // Tratar alias do _id
+        $column = ($column == 'id') ? '_id' : $column;
+
         // Here we will make some assumptions about the operator. If only 2 values are
         // passed to the method, we will assume that the operator is an equals sign
         // and keep going. Otherwise, we'll require the operator to be passed in.
@@ -106,6 +109,9 @@ trait Wheres
      */
     public function whereNull($column, $boolean = 'and', $not = false)
     {
+        // Tratar alias do _id
+        $column = ($column == 'id') ? '_id' : $column;
+
         $type = $not ? 'NotNull' : 'Null';
 
         $this->wheres[] = compact('type', 'column', 'boolean');
@@ -152,6 +158,9 @@ trait Wheres
      */
     public function whereBetween($column, array $values, $boolean = 'and', $not = false)
     {
+        // Tratar alias do _id
+        $column = ($column == 'id') ? '_id' : $column;
+
         $type = 'between';
 
         $this->wheres[] = compact('column', 'type', 'boolean', 'values', 'not');
