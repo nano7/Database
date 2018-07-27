@@ -89,12 +89,12 @@ class Builder
      */
     public $operators = [
         '='        => '=',
-        '<'        => '$lt',
-        '>'        => '$gt',
-        '<='       => '$lte',
-        '>='       => '$gte',
-        '<>'       => '$ne',
-        '!='       => '$ne',
+        '<'        => 'lt',
+        '>'        => 'gt',
+        '<='       => 'lte',
+        '>='       => 'gte',
+        '<>'       => 'ne',
+        '!='       => 'ne',
         'like'     => 'like',
         'not like' => 'not like',
         'between'  => 'between',
