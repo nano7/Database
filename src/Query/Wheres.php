@@ -6,6 +6,7 @@ use Closure;
  * Class Wheres
  * @property array $wheres
  * @property array $operators
+ * @method Builder forNestedWhere()
  */
 trait Wheres
 {
@@ -30,10 +31,9 @@ trait Wheres
         // If the columns is actually a Closure instance, we will assume the developer
         // wants to begin a nested where statement which is wrapped in parenthesis.
         // We'll add that Closure to the query then return back out immediately.
-        // BRUNO-AKI
-        //if ($column instanceof Closure) {
-        //    return $this->whereNested($column, $boolean);
-        //}
+        if ($column instanceof Closure) {
+            return $this->whereNested($column, $boolean);
+        }
 
         // If the given operator is not found in the list of valid operators we will
         // assume that the developer is just short-cutting the '=' operators and
@@ -67,6 +67,20 @@ trait Wheres
         );
 
         return $this;
+    }
+
+    /**
+     * Add a nested where statement to the query.
+     *
+     * @param  \Closure $callback
+     * @param  string   $boolean
+     * @return Builder|static
+     */
+    public function whereNested(Closure $callback, $boolean = 'and')
+    {
+        call_user_func($callback, $query = $this->forNestedWhere());
+
+        return $this->addNestedWhereQuery($query, $boolean);
     }
 
     /**
@@ -121,6 +135,47 @@ trait Wheres
     }
 
     /**
+     * @inheritdoc
+     */
+    public function whereBetween($column, array $values, $boolean = 'and', $not = false)
+    {
+        $type = 'between';
+
+        $this->wheres[] = compact('column', 'type', 'boolean', 'values', 'not');
+
+        return $this;
+    }
+
+    /**
+     * Add a raw where clause to the query.
+     *
+     * @param  string  $sql
+     * @param  mixed   $bindings
+     * @param  string  $boolean
+     * @return $this
+     */
+    public function whereRaw($sql, $bindings = [], $boolean = 'and')
+    {
+        $type = 'raw';
+
+        $this->wheres[] = compact('type', 'sql', 'boolean');
+
+        return $this;
+    }
+
+    /**
+     * Add a raw or where clause to the query.
+     *
+     * @param  string  $sql
+     * @param  mixed   $bindings
+     * @return Builder|static
+     */
+    public function orWhereRaw($sql, $bindings = [])
+    {
+        return $this->whereRaw($sql, $bindings, 'or');
+    }
+
+    /**
      * Prepare the value and operator for a where clause.
      *
      * @param  string  $value
@@ -165,5 +220,25 @@ trait Wheres
     protected function invalidOperator($operator)
     {
         return ! array_key_exists(strtolower($operator), $this->operators);
+    }
+
+    /**
+     * Add another query builder as a nested where to the query builder.
+     *
+     * @param  Builder|static $query
+     * @param  string  $boolean
+     * @return $this
+     */
+    public function addNestedWhereQuery($query, $boolean = 'and')
+    {
+        if (count($query->wheres)) {
+            $type = 'Nested';
+
+            $this->wheres[] = compact('type', 'query', 'boolean');
+
+            //$this->addBinding($query->getBindings(), 'where');
+        }
+
+        return $this;
     }
 }

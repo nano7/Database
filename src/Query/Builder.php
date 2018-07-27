@@ -97,7 +97,9 @@ class Builder
         '!='       => '$ne',
         'like'     => 'like',
         'not like' => 'not like',
+        'between'  => 'between',
         'exists'   => 'exists',
+        'all'      => 'all',
     ];
 
     /**
@@ -221,5 +223,25 @@ class Builder
         }
 
         return $this;
+    }
+
+    /**
+     * Get a new instance of the query builder.
+     *
+     * @return Builder
+     */
+    public function newQuery()
+    {
+        return new static($this->connection, $this->from, $this->collection);
+    }
+
+    /**
+     * Create a new query instance for nested where condition.
+     *
+     * @return Builder
+     */
+    public function forNestedWhere()
+    {
+        return $this->newQuery();
     }
 }
