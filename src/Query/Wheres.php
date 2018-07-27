@@ -70,6 +70,19 @@ trait Wheres
     }
 
     /**
+     * Add a basic where clause to the query.
+     *
+     * @param  string|array|\Closure  $column
+     * @param  mixed   $operator
+     * @param  mixed   $value
+     * @return $this
+     */
+    public function orWhere($column, $operator = null, $value = null)
+    {
+        return $this->where($column, $operator, $value, 'or');
+    }
+
+    /**
      * Add a nested where statement to the query.
      *
      * @param  \Closure $callback
