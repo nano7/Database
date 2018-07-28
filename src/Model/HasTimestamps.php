@@ -1,5 +1,7 @@
 <?php namespace Nano7\Database\Model;
 
+use Carbon\Carbon;
+
 trait HasTimestamps
 {
     /**
@@ -77,7 +79,7 @@ trait HasTimestamps
      */
     public function freshTimestamp()
     {
-        return new Carbon;
+        return new Carbon();
     }
 
     /**
