@@ -246,11 +246,19 @@ trait HasAttributes
     /**
      * Verifica e retorna se ha alguma alteracao para ser salva.
      *
+     * @param $attribute
      * @return bool
      */
-    public function hasChanged()
+    public function hasChanged($attribute = false)
     {
-        return count($this->getChanged()) > 0;
+        $changes = $this->getChanged();
+
+        // Verificar se atributo foi alterado
+        if ($attribute !== false) {
+            return array_key_exists($attribute, $changes);
+        }
+
+        return count($changes) > 0;
     }
 
     /**

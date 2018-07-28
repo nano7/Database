@@ -13,8 +13,9 @@ class Model implements Arrayable
     use HasEvents;
     use HasScopes;
     use HasMutator;
-    use HasAttributes;
     use HasRelation;
+    use HasTimestamps;
+    use HasAttributes;
 
     /**
      * The connection name for the model.
@@ -53,6 +54,20 @@ class Model implements Arrayable
      * @var bool
      */
     protected $fillExists = false;
+
+    /**
+     * The name of the "created at" column.
+     *
+     * @var string
+     */
+    const CREATED_AT = 'created_at';
+
+    /**
+     * The name of the "updated at" column.
+     *
+     * @var string
+     */
+    const UPDATED_AT = 'updated_at';
 
     /**
      * Create a new Model model instance.
@@ -301,6 +316,11 @@ class Model implements Arrayable
             return false;
         }
 
+        // Verificar para atualizar os timestamps
+        if ($this->usesTimestamps()) {
+            $this->updateTimestamps();
+        }
+
         // Inserir documento e capturar ID
         $id = $query->insertGetId($this->attributes);
         $this->setAttribute('_id', $id);
@@ -325,6 +345,11 @@ class Model implements Arrayable
         // Dosparar evento de documento sendo alterado
         if ($this->fireModelEvent('updating') === false) {
             return false;
+        }
+
+        // Verificar para atualizar os timestamps
+        if ($this->usesTimestamps()) {
+            $this->updateTimestamps();
         }
 
         // Carregar lista só dos atributos que foram alterados
