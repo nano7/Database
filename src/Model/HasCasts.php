@@ -110,6 +110,29 @@ trait HasCasts
     }
 
     /**
+     * Get an attribute and cast value to a native PHP type.
+     *
+     * @param  string  $key
+     * @param  mixed  $value
+     * @return mixed
+     */
+    protected function getCastToPersistCast($key, $value)
+    {
+        if (is_null($value)) {
+            return $value;
+        }
+
+        $type   = $this->getCastType($key);
+        $method = 'getCastToPersist' . Str::studly($type) . 'Type';
+
+        if (method_exists($this, $method)) {
+            return $this->$method($key, $value);
+        }
+
+        return $value;
+    }
+
+    /**
      * GET Type string.
      * @param $key
      * @param $value
@@ -252,5 +275,21 @@ trait HasCasts
         $value = $this->getCastDateTimeType($key, $value);
 
         return new UTCDateTime($value->getTimestamp() * 1000);
+    }
+
+    /**
+     * GET Type datetime.
+     * @param $key
+     * @param $value
+     * @return string
+     */
+    protected function getCastToPersistDateTimeType($key, $value)
+    {
+        // Verificar se jah eh Carbon
+        if ($value instanceof Carbon) {
+            return $value->format(DateTimeInterface::ISO8601);
+        }
+
+        return trim($value);
     }
 }

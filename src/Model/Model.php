@@ -508,13 +508,16 @@ class Model implements Arrayable
      *
      * @return array
      */
-    public function toArray()
+    public function toArray($toPersist = false)
     {
         $array = [];
-        foreach (array_keys($this->attributes) as $key) {
-            $key = ($key == '_id') ? 'id' : $key;
 
-            $array[$key] = $this->getAttribute($key);
+        foreach (array_keys($this->attributes) as $key) {
+            $key   = ($key == '_id') ? 'id' : $key;
+            $value = $this->getAttribute($key);
+            $value = $toPersist ? $this->getCastToPersistCast($key, $value) : $value;
+
+            $array[$key] = $value;
         }
 
         return $array;
