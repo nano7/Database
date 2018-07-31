@@ -1,7 +1,6 @@
 <?php namespace Nano7\Database\Model;
 
 use Carbon\Carbon;
-use DateTimeInterface;
 use Illuminate\Support\Str;
 use MongoDB\BSON\UTCDateTime;
 use Nano7\Database\Query\Builder;
@@ -287,7 +286,7 @@ trait HasCasts
     {
         // Verificar se jah eh Carbon
         if ($value instanceof Carbon) {
-            return $value->format(DateTimeInterface::ISO8601);
+            return $value->format(Carbon::ISO8601);
         }
 
         return trim($value);
