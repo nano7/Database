@@ -30,7 +30,7 @@ trait HasCasts
         $defaults = [
             '_id' => 'string',
             static::CREATED_AT => 'datetime',
-            static::UPDATED_AT => 'datetime,'
+            static::UPDATED_AT => 'datetime',
         ];
 
         return array_merge([], $defaults, $this->casts);
