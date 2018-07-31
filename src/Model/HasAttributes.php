@@ -12,6 +12,7 @@ use Nano7\Foundation\Support\Arr;
  * @method mixed getMutateAttribute($key, $value)
  * @method mixed setMutateAttribute($key, $value)
  * @method mixed getRelationValue($key)
+ * @method bool hasHidden($key)
  */
 trait HasAttributes
 {

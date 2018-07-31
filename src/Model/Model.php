@@ -16,6 +16,7 @@ class Model implements Arrayable
     use HasRelation;
     use HasTimestamps;
     use HasAttributes;
+    use HasHideAttributes;
 
     /**
      * The connection name for the model.
@@ -517,7 +518,10 @@ class Model implements Arrayable
             $value = $this->getAttribute($key);
             $value = $toPersist ? $this->getCastToPersistCast($key, $value) : $value;
 
-            $array[$key] = $value;
+            // Verificar eh um campo escondido
+            if (! ($toPersist && (! $this->hasHidden($key)))) {
+                $array[$key] = $value;
+            }
         }
 
         return $array;
