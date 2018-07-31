@@ -519,7 +519,7 @@ class Model implements Arrayable
             $value = $toPersist ? $this->getCastToPersistCast($key, $value) : $value;
 
             // Verificar eh um campo escondido
-            if (! ($toPersist && (! $this->hasHidden($key)))) {
+            if ((! $toPersist) || ($toPersist && (! $this->hasHidden($key)))) {
                 $array[$key] = $value;
             }
         }
