@@ -203,6 +203,12 @@ trait HasCasts
             return Carbon::createFromTimestamp($value);
         }
 
+        // Verificar se foi informado uma string no formato ISO8601
+        // Converter para carbon
+        if (is_string($value) && preg_match('/^(\\d{4})-(\\d{2})-(\\d{2})T(\\d{2}):(\\d{2}):(\\d{2})\\+(\\d{4})$/', $value)) {
+            return Carbon::createFromFormat(Carbon::ISO8601, $value)->startOfDay();
+        }
+
         // Verificar se foi informado uma string no formato yyyy-mm-dd
         // Converter para carbon
         if (is_string($value) && preg_match('/^(\d{4})-(\d{2})-(\d{2})$/', $value)) {
@@ -218,6 +224,7 @@ trait HasCasts
         // Finally, we will just assume this date is in the format used by default on
         // the database connection and use that format to create the Carbon object
         // that is returned back out to the developers after we convert it here.
+        // Format: yyyy-mm-dd hh:ii:ss
         return Carbon::createFromFormat($this->dateFormat, $value);
     }
 
