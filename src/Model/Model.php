@@ -169,7 +169,7 @@ class Model implements Arrayable
      */
     public function toClone()
     {
-        $attributes = $this->toArray();
+        $attributes = $this->toArray(false);
 
         unset($attributes['id']);
         unset($attributes['_id']);
@@ -508,7 +508,7 @@ class Model implements Arrayable
      *
      * @return array
      */
-    public function toArray($toPersist = false)
+    public function toArray($toPersist = true)
     {
         $array = [];
 
