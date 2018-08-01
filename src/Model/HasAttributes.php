@@ -182,7 +182,7 @@ trait HasAttributes
      */
     public function mergeRawAttributes(array $attributes, $sync = false)
     {
-        $this->attributes = array_merge([], $this->attributes, $attributes);
+        $this->attributes = array_merge([], $attributes, $this->attributes);
 
         if ($sync) {
             $this->syncOriginal();
