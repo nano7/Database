@@ -247,7 +247,7 @@ trait HasAttributes
     /**
      * Verifica e retorna se ha alguma alteracao para ser salva.
      *
-     * @param $attribute
+     * @param bool|string|array $attribute
      * @return bool
      */
     public function hasChanged($attribute = false)
@@ -256,7 +256,14 @@ trait HasAttributes
 
         // Verificar se atributo foi alterado
         if ($attribute !== false) {
-            return array_key_exists($attribute, $changes);
+            $attribute = (array) $attribute;
+            foreach ($attribute as $attr) {
+                if (array_key_exists($attr, $changes)) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         return count($changes) > 0;
