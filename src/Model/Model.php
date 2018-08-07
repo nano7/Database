@@ -405,7 +405,7 @@ class Model implements Arrayable
      */
     public function save()
     {
-        $query = $this->newQueryNotModel();
+        $query = $this->newQueryNotModel(['*']);
 
         // Validar attributes
         if ($this->validate() != true) {
@@ -443,7 +443,7 @@ class Model implements Arrayable
      */
     public function delete()
     {
-        $query = $this->newQueryNotModel();
+        $query = $this->newQueryNotModel(['*']);
 
         return $this->performDelete($query);
     }

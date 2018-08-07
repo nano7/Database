@@ -33,7 +33,14 @@ trait HasScopes
      */
     protected function applyScopes(QueryBuilder $query, Model $model, $ignoreScopes = [])
     {
+        // Verificar se deve ignorar todos os scopes
+        if (in_array('*', $ignoreScopes)) {
+            return;
+        }
+
+        // Aplicar scopes
         foreach (static::$scopes as $sid => $scope) {
+            // Verificar se deve ignorar scope especifico
             if (! in_array($sid, $ignoreScopes)) {
                 $scope->apply($query, $model);
             }
