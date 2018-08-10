@@ -88,18 +88,19 @@ class Builder
      * @var array
      */
     public $operators = [
-        '='        => '=',
-        '<'        => 'lt',
-        '>'        => 'gt',
-        '<='       => 'lte',
-        '>='       => 'gte',
-        '<>'       => 'ne',
-        '!='       => 'ne',
-        'like'     => 'like',
-        'not like' => 'not like',
-        'between'  => 'between',
-        'exists'   => 'exists',
-        'all'      => 'all',
+        '='         => '=',
+        '<'         => 'lt',
+        '>'         => 'gt',
+        '<='        => 'lte',
+        '>='        => 'gte',
+        '<>'        => 'ne',
+        '!='        => 'ne',
+        'like'      => 'like',
+        'not like'  => 'not like',
+        'between'   => 'between',
+        'exists'    => 'exists',
+        'all'       => 'all',
+        'elemmatch' => 'elemMatch',
     ];
 
     /**
