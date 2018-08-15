@@ -18,6 +18,8 @@ use Nano7\Foundation\Support\Str;
  * @property array $orders
  * @property array $options
  * @property array $operators
+ * @property array $groups
+ * @property array $aggregate
  * @property int $limit
  * @property int $offset
  * @property bool $distinct
@@ -195,9 +197,9 @@ trait Runner
         $wheres = $this->compileWheres();
 
         // Use MongoDB's aggregation framework when using grouping or aggregation functions.
-        //if ($this->groups || $this->aggregate) {
-        //    return $this->getFreshGroupAndAggregate($wheres);
-        //}
+        if ($this->groups || $this->aggregate) {
+            return $this->getFreshGroupAndAggregate($wheres);
+        }
 
         // Return distinct results directly
         if ($this->distinct) {
@@ -215,108 +217,98 @@ trait Runner
      */
     protected function getFreshGroupAndAggregate($wheres)
     {
-        /*
-            $group = [];
-            $unwinds = [];
+        $group = [];
+        $unwinds = [];
 
-            // Add grouping columns to the $group part of the aggregation pipeline.
-            if ($this->groups) {
-                foreach ($this->groups as $column) {
-                    $group['_id'][$column] = '$' . $column;
+        // Add grouping columns to the $group part of the aggregation pipeline.
+        if ($this->groups) {
+            foreach ($this->groups as $column) {
+                $group['_id'][$column] = '$' . $column;
 
-                    // When grouping, also add the $last operator to each grouped field,
-                    // this mimics MySQL's behaviour a bit.
-                    $group[$column] = ['$last' => '$' . $column];
+                // When grouping, also add the $last operator to each grouped field,
+                // this mimics MySQL's behaviour a bit.
+                $group[$column] = ['$last' => '$' . $column];
+            }
+
+            // Do the same for other columns that are selected.
+            foreach ($this->columns as $column) {
+                $key = str_replace('.', '_', $column);
+
+                $group[$key] = ['$last' => '$' . $column];
+            }
+        }
+
+        // Add aggregation functions to the $group part of the aggregation pipeline,
+        // these may override previous aggregations.
+        if ($this->aggregate) {
+            $function = $this->aggregate['function'];
+
+            foreach ($this->aggregate['columns'] as $column) {
+                // Add unwind if a subdocument array should be aggregated
+                // column: subarray.price => {$unwind: '$subarray'}
+                if (count($splitColumns = explode('.*.', $column)) == 2) {
+                    $unwinds[] = $splitColumns[0];
+                    $column = implode('.', $splitColumns);
                 }
 
-                // Do the same for other columns that are selected.
-                foreach ($this->columns as $column) {
-                    $key = str_replace('.', '_', $column);
-
-                    $group[$key] = ['$last' => '$' . $column];
+                // Translate count into sum.
+                if ($function == 'count') {
+                    $group['aggregate'] = ['$sum' => 1];
+                } // Pass other functions directly.
+                else {
+                    $group['aggregate'] = ['$' . $function => '$' . $column];
                 }
             }
+        }
 
-            // Add aggregation functions to the $group part of the aggregation pipeline,
-            // these may override previous aggregations.
-            if ($this->aggregate) {
-                $function = $this->aggregate['function'];
+        // The _id field is mandatory when using grouping.
+        if ($group && empty($group['_id'])) {
+            $group['_id'] = null;
+        }
 
-                foreach ($this->aggregate['columns'] as $column) {
-                    // Add unwind if a subdocument array should be aggregated
-                    // column: subarray.price => {$unwind: '$subarray'}
-                    if (count($splitColumns = explode('.*.', $column)) == 2) {
-                        $unwinds[] = $splitColumns[0];
-                        $column = implode('.', $splitColumns);
-                    }
+        // Build the aggregation pipeline.
+        $pipeline = [];
+        if ($wheres) {
+            $pipeline[] = ['$match' => $wheres];
+        }
 
-                    // Translate count into sum.
-                    if ($function == 'count') {
-                        $group['aggregate'] = ['$sum' => 1];
-                    } // Pass other functions directly.
-                    else {
-                        $group['aggregate'] = ['$' . $function => '$' . $column];
-                    }
-                }
-            }
+        // apply unwinds for subdocument array aggregation
+        foreach ($unwinds as $unwind) {
+            $pipeline[] = ['$unwind' => '$' . $unwind];
+        }
 
-            // When using pagination, we limit the number of returned columns
-            // by adding a projection.
-            if ($this->paginating) {
-                foreach ($this->columns as $column) {
-                    $this->projections[$column] = 1;
-                }
-            }
+        if ($group) {
+            $pipeline[] = ['$group' => $group];
+        }
 
-            // The _id field is mandatory when using grouping.
-            if ($group && empty($group['_id'])) {
-                $group['_id'] = null;
-            }
+        // Apply order and limit
+        if ($this->orders) {
+            $pipeline[] = ['$sort' => $this->orders];
+        }
+        if ($this->offset) {
+            $pipeline[] = ['$skip' => $this->offset];
+        }
+        if ($this->limit) {
+            $pipeline[] = ['$limit' => $this->limit];
+        }
+        if ($this->projections) {
+            $pipeline[] = ['$project' => $this->projections];
+        }
 
-            // Build the aggregation pipeline.
-            $pipeline = [];
-            if ($wheres) {
-                $pipeline[] = ['$match' => $wheres];
-            }
+        $options = [
+            'typeMap' => ['root' => 'array', 'document' => 'array'],
+        ];
 
-            // apply unwinds for subdocument array aggregation
-            foreach ($unwinds as $unwind) {
-                $pipeline[] = ['$unwind' => '$' . $unwind];
-            }
+        // Add custom query options
+        if (count($this->options)) {
+            $options = array_merge($options, $this->options);
+        }
 
-            if ($group) {
-                $pipeline[] = ['$group' => $group];
-            }
+        // Execute aggregation
+        $results = iterator_to_array($this->collection->aggregate($pipeline, $options));
 
-            // Apply order and limit
-            if ($this->orders) {
-                $pipeline[] = ['$sort' => $this->orders];
-            }
-            if ($this->offset) {
-                $pipeline[] = ['$skip' => $this->offset];
-            }
-            if ($this->limit) {
-                $pipeline[] = ['$limit' => $this->limit];
-            }
-            if ($this->projections) {
-                $pipeline[] = ['$project' => $this->projections];
-            }
-
-            $options = [
-                'typeMap' => ['root' => 'array', 'document' => 'array'],
-            ];
-
-            // Add custom query options
-            if (count($this->options)) {
-                $options = array_merge($options, $this->options);
-            }
-
-            // Execute aggregation
-            $results = iterator_to_array($this->collection->aggregate($pipeline, $options));
-
-            // Return results
-            return $this->useCollections ? new Collection($results) : $results;
-        /**/
+        // Return results
+        return $results;
     }
 
     /**

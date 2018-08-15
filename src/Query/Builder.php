@@ -2,6 +2,7 @@
 
 use MongoDB\Collection;
 use Nano7\Database\Connection;
+use Nano7\Foundation\Support\Arr;
 use Nano7\Database\ConnectionInterface;
 
 class Builder
@@ -46,6 +47,20 @@ class Builder
      * @var array
      */
     public $wheres = [];
+
+    /**
+     * The groupings for the query.
+     *
+     * @var array
+     */
+    public $groups;
+
+    /**
+     * An aggregate function and column to be run.
+     *
+     * @var array
+     */
+    public $aggregate;
 
     /**
      * The orderings for the query.
@@ -140,6 +155,55 @@ class Builder
     }
 
     /**
+     * Add a "group by" clause to the query.
+     *
+     * @param  array  $groups
+     * @return $this
+     */
+    public function groupBy($groups)
+    {
+        $groups = (array) $groups;
+
+        foreach ($groups as $group) {
+            $this->groups = array_merge($this->groups, Arr::wrap($group));
+        }
+
+        return $this;
+    }
+
+    /**
+     * Execute an aggregate function on the database.
+     *
+     * @param  string  $function
+     * @param  array   $columns
+     * @return mixed
+     */
+    public function aggregate($function, $columns = ['*'])
+    {
+        $this->aggregate = compact('function', 'columns');
+
+        $previousColumns = $this->columns;
+
+        $this->columns = [];
+
+        $results = $this->get($columns);
+
+        // Once we have executed the query, we will reset the aggregate property so
+        // that more select queries can be executed against the database without
+        // the aggregate value getting in the way when the grammar builds it.
+        $this->aggregate = null;
+        $this->columns = $previousColumns;
+
+        if (isset($results[0])) {
+            $result = (array) $results[0];
+
+            return $result['aggregate'];
+        }
+
+        return null;
+    }
+
+    /**
      * Add an "order by" clause to the query.
      *
      * @param  string  $column
@@ -194,6 +258,74 @@ class Builder
     public function forPage($page, $perPage = 15)
     {
         return $this->offset(($page - 1) * $perPage)->limit($perPage);
+    }
+
+    /**
+     * Retrieve the "count" result of the query.
+     *
+     * @param  string  $columns
+     * @return int
+     */
+    public function count($columns = '*')
+    {
+        return (int) $this->aggregate(__FUNCTION__, Arr::wrap($columns));
+    }
+
+    /**
+     * Retrieve the minimum value of a given column.
+     *
+     * @param  string  $column
+     * @return mixed
+     */
+    public function min($column)
+    {
+        return $this->aggregate(__FUNCTION__, [$column]);
+    }
+
+    /**
+     * Retrieve the maximum value of a given column.
+     *
+     * @param  string  $column
+     * @return mixed
+     */
+    public function max($column)
+    {
+        return $this->aggregate(__FUNCTION__, [$column]);
+    }
+
+    /**
+     * Retrieve the sum of the values of a given column.
+     *
+     * @param  string  $column
+     * @return mixed
+     */
+    public function sum($column)
+    {
+        $result = $this->aggregate(__FUNCTION__, [$column]);
+
+        return $result ?: 0;
+    }
+
+    /**
+     * Retrieve the average of the values of a given column.
+     *
+     * @param  string  $column
+     * @return mixed
+     */
+    public function avg($column)
+    {
+        return $this->aggregate(__FUNCTION__, [$column]);
+    }
+
+    /**
+     * Alias for the "avg" method.
+     *
+     * @param  string  $column
+     * @return mixed
+     */
+    public function average($column)
+    {
+        return $this->avg($column);
     }
 
     /**
