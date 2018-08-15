@@ -15,6 +15,16 @@ class Builder
     protected $query;
 
     /**
+     * The methods that should be returned from query builder.
+     *
+     * @var array
+     */
+    protected $passthru = [
+        'insert', 'insertGetId',
+        'exists', 'doesntExist', 'count', 'min', 'max', 'avg', 'sum',
+    ];
+
+    /**
      * Execute the query as a "select" statement.
      *
      * @param  array  $columns
@@ -152,7 +162,12 @@ class Builder
 
         // Executar da query
         if ((! is_null($this->query)) && method_exists($this->query, $name)) {
-            call_user_func_array([$this->query, $name], $arguments);
+            $return = call_user_func_array([$this->query, $name], $arguments);
+
+            // Verificar se deve encaminhar o retorno da query
+            if (in_array($name, $this->passthru)) {
+                return $return;
+            }
         }
 
         return $this;
