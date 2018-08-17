@@ -1,6 +1,7 @@
 <?php namespace Nano7\Database\Model;
 
 use Nano7\Database\Query\Builder as QueryBuilder;
+use Nano7\Foundation\Support\Arr;
 
 trait HasScopes
 {
@@ -15,7 +16,8 @@ trait HasScopes
     public static function registerScope($scope)
     {
         if ($scope instanceof Scope) {
-            static::$scopes[$scope->getName()] = $scope;
+            $class = get_called_class();
+            static::$scopes[$class][$scope->getName()] = $scope;
 
             return true;
         }
@@ -38,8 +40,12 @@ trait HasScopes
             return;
         }
 
+        // Carregar lista de scopes
+        $class = get_called_class();
+        $scopes = Arr::get(static::$scopes, $class, []);
+
         // Aplicar scopes
-        foreach (static::$scopes as $sid => $scope) {
+        foreach ($scopes as $sid => $scope) {
             // Verificar se deve ignorar scope especifico
             if (! in_array($sid, $ignoreScopes)) {
                 $scope->apply($query, $model);
