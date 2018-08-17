@@ -53,7 +53,7 @@ trait HasRelation
         // actually be responsible for retrieving and hydrating every relations.
         $ownerKey = $ownerKey ?: '_id';
 
-        return new ForeignOne($this, $instance->query(), $foreignKey, $ownerKey);
+        return new ForeignOne($this, $instance->query(['*']), $foreignKey, $ownerKey);
     }
 
     /**
@@ -72,7 +72,7 @@ trait HasRelation
 
         $localKey = $localKey ?: '_id';
 
-        return new ForeignMany($this, $instance->query(), $foreignKey, $localKey);
+        return new ForeignMany($this, $instance->query(['*']), $foreignKey, $localKey);
     }
 
     /**
