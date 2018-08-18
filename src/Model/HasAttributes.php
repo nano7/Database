@@ -174,16 +174,19 @@ trait HasAttributes
     }
 
     /**
-     * Set the array of model attributes. No checking is done.
+     * Set the array of model attributes.
      *
      * @param  array  $attributes
      * @param  bool  $sync
+     * @param  bool  $force Force change value if exists.
      * @return $this
      */
-    public function mergeRawAttributes(array $attributes, $sync = false)
+    public function mergeRawAttributes(array $attributes, $sync = false, $force = false)
     {
         foreach ($attributes as $key => $value) {
-            $this->setAttribute($key, $value);
+            if ($force || ((! $force) && (! $this->hasAttribute($key)))) {
+                $this->setAttribute($key, $value);
+            }
         }
 
         if ($sync) {
