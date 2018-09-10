@@ -1,6 +1,6 @@
 <?php namespace Nano7\Database\Model;
 
-use Nano7\Foundation\Support\Arr;
+use Nano7\Support\Arr;
 
 /**
  * Class HasAttributes

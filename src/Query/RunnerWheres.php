@@ -1,11 +1,11 @@
 <?php namespace Nano7\Database\Query;
 
 use DateTime;
+use Nano7\Support\Str;
 use MongoDB\Collection;
-use MongoDB\BSON\ObjectID;
 use MongoDB\BSON\Regex;
+use MongoDB\BSON\ObjectID;
 use MongoDB\BSON\UTCDateTime;
-use Nano7\Foundation\Support\Str;
 
 /**
  * Class RunnerWheres.

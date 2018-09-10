@@ -1,6 +1,6 @@
 <?php namespace Nano7\Database\Model;
 
-use Carbon\Carbon;
+use Nano7\Support\Carbon;
 use Illuminate\Support\Str;
 use MongoDB\BSON\UTCDateTime;
 use Nano7\Database\Query\Builder;

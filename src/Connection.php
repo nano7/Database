@@ -2,7 +2,7 @@
 
 use MongoDB\Client;
 use MongoDB\Database;
-use Nano7\Foundation\Support\Arr;
+use Nano7\Support\Arr;
 use Nano7\Database\Query\Builder;
 
 class Connection implements ConnectionInterface

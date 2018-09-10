@@ -1,7 +1,7 @@
 <?php namespace Nano7\Database;
 
-use Nano7\Foundation\Support\Arr;
-use Nano7\Foundation\Support\Str;
+use Nano7\Support\Arr;
+use Nano7\Support\Str;
 use Nano7\Foundation\Application;
 
 class DataManager

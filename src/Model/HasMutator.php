@@ -1,6 +1,6 @@
 <?php namespace Nano7\Database\Model;
 
-use Nano7\Foundation\Support\Str;
+use Nano7\Support\Str;
 
 trait HasMutator
 {

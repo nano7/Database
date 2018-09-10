@@ -1,7 +1,7 @@
 <?php namespace Nano7\Database\Model;
 
+use Nano7\Support\Arr;
 use Nano7\Database\Query\Builder as QueryBuilder;
-use Nano7\Foundation\Support\Arr;
 
 trait HasScopes
 {

@@ -1,7 +1,7 @@
 <?php namespace Nano7\Database\Model;
 
-use Nano7\Foundation\Support\Arr;
-use Nano7\Foundation\Support\Str;
+use Nano7\Support\Arr;
+use Nano7\Support\Str;
 use Nano7\Validation\Json\ValidatorJson;
 use Nano7\Validation\ValidationException;
 use Illuminate\Contracts\Support\Arrayable;

@@ -1,8 +1,8 @@
 <?php namespace Nano7\Database\Migrations;
 
-use Illuminate\Support\Str;
+use Nano7\Support\Str;
+use Nano7\Support\Filesystem;
 use Illuminate\Support\Collection;
-use Nano7\Foundation\Support\Filesystem;
 
 class Migrator
 {

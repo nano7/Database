@@ -1,9 +1,9 @@
 <?php namespace Nano7\Database\Deploys;
 
-use Nano7\Foundation\Support\Arr;
-use Nano7\Foundation\Support\Str;
+use Nano7\Support\Arr;
+use Nano7\Support\Str;
+use Nano7\Support\Filesystem;
 use Illuminate\Support\Collection;
-use Nano7\Foundation\Support\Filesystem;
 
 class Deployer
 {

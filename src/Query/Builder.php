@@ -1,8 +1,8 @@
 <?php namespace Nano7\Database\Query;
 
+use Nano7\Support\Arr;
 use MongoDB\Collection;
 use Nano7\Database\Connection;
-use Nano7\Foundation\Support\Arr;
 use Nano7\Database\ConnectionInterface;
 
 class Builder

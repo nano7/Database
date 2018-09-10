@@ -1,6 +1,6 @@
 <?php namespace Nano7\Database\Model;
 
-use Carbon\Carbon;
+use Nano7\Support\Carbon;
 
 trait HasTimestamps
 {

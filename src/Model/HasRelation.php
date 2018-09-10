@@ -1,6 +1,6 @@
 <?php namespace Nano7\Database\Model;
 
-use Nano7\Foundation\Support\Str;
+use Nano7\Support\Str;
 use Nano7\Database\Model\Relations\EmbedOne;
 use Nano7\Database\Model\Relations\Relation;
 use Nano7\Database\Model\Relations\EmbedMany;
